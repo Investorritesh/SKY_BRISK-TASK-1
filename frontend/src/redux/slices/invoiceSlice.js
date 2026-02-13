@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../utils/api';
 
-const API_URL = 'http://127.0.0.1:5000/api/invoices';
+const API_URL = '/invoices';
 
 const initialState = {
     invoices: [],
@@ -13,24 +13,20 @@ const initialState = {
 
 export const getInvoices = createAsyncThunk('invoices/getAll', async (params, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
         const { page = 0, limit = 10 } = params || {};
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}`, config);
+        const response = await api.get(`${API_URL}?page=${page}&limit=${limit}`);
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.message);
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
 });
 
 export const createInvoice = createAsyncThunk('invoices/create', async (data, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.post(API_URL, data, config);
+        const response = await api.post(API_URL, data);
         return response.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.message);
+        return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
 });
 

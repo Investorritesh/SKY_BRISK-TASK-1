@@ -10,6 +10,8 @@ import {
     DialogContent,
     IconButton,
     Chip,
+    useTheme,
+    useMediaQuery,
 } from '@mui/material';
 import { Add, Refresh, Close } from '@mui/icons-material';
 import DataTable from '../components/common/DataTable';
@@ -20,6 +22,8 @@ import { getProducts } from '../redux/slices/productSlice';
 import { toast } from 'react-toastify';
 
 const PurchaseOrders = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -88,9 +92,23 @@ const PurchaseOrders = () => {
 
     return (
         <Box>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h4" fontWeight="bold">Purchase Orders</Typography>
-                <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>Create PO</Button>
+            <Box
+                display="flex"
+                flexDirection={isMobile ? 'column' : 'row'}
+                justifyContent="space-between"
+                alignItems={isMobile ? 'flex-start' : 'center'}
+                gap={isMobile ? 2 : 0}
+                mb={3}
+            >
+                <Typography variant={isMobile ? "h5" : "h4"} fontWeight="bold">Purchase Orders</Typography>
+                <Button
+                    variant="contained"
+                    fullWidth={isMobile}
+                    startIcon={<Add />}
+                    onClick={() => setOpen(true)}
+                >
+                    Create PO
+                </Button>
             </Box>
 
             <DataTable

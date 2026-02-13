@@ -53,77 +53,83 @@ const Sidebar = ({ drawerWidth, isSidebarOpen, setIsSidebarOpen, isNonMobile }) 
 
     return (
         <Box component="nav">
-            {isSidebarOpen && (
-                <Drawer
-                    open={isSidebarOpen}
-                    onClose={() => setIsSidebarOpen(false)}
-                    variant="persistent"
-                    anchor="left"
-                    sx={{
+            <Drawer
+                open={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                variant={isNonMobile ? 'persistent' : 'temporary'}
+                anchor="left"
+                sx={{
+                    width: drawerWidth,
+                    '& .MuiDrawer-paper': {
+                        color: theme.palette.text.primary,
+                        backgroundColor: '#fff',
+                        boxSizing: 'border-box',
+                        borderWidth: isNonMobile ? 0 : '1px',
                         width: drawerWidth,
-                        '& .MuiDrawer-paper': {
-                            color: theme.palette.text.primary,
-                            backgroundColor: '#fff',
-                            boxSizing: 'border-box',
-                            borderWidth: isNonMobile ? 0 : '2px',
-                            width: drawerWidth,
-                            boxShadow: '4px 0px 10px rgba(0,0,0,0.02)',
-                        },
-                    }}
-                >
-                    <Box width="100%">
-                        <Box m="1.5rem 2rem 2rem 3rem">
-                            <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <Box display="flex" alignItems="center" gap="0.5rem">
-                                    <Typography variant="h4" fontWeight="bold" color={theme.palette.primary.main}>
-                                        ERP SYS
-                                    </Typography>
-                                </Box>
-                                {!isNonMobile && (
-                                    <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                                        <ChevronLeft />
-                                    </IconButton>
-                                )}
+                        boxShadow: '4px 0px 10px rgba(0,0,0,0.02)',
+                    },
+                }}
+            >
+                <Box width="100%">
+                    <Box m="1.5rem 2rem 2rem 3rem">
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Box display="flex" alignItems="center" gap="0.5rem">
+                                <Typography variant="h5" fontWeight="bold" color={theme.palette.primary.main}>
+                                    ERP System
+                                </Typography>
                             </Box>
+                            {!isNonMobile && (
+                                <IconButton onClick={() => setIsSidebarOpen(false)}>
+                                    <ChevronLeft />
+                                </IconButton>
+                            )}
                         </Box>
-                        <List>
-                            {navItems.map(({ text, icon, path, adminOnly }) => {
-                                if (adminOnly && user?.role !== 'admin') return null;
+                    </Box>
+                    <List sx={{ px: '0.5rem' }}>
+                        {navItems.map(({ text, icon, path, adminOnly }) => {
+                            if (adminOnly && user?.role !== 'admin') return null;
 
-                                return (
-                                    <ListItem key={text} disablePadding>
-                                        <ListItemButton
-                                            onClick={() => {
-                                                navigate(path);
-                                                setActive(path);
-                                            }}
+                            return (
+                                <ListItem key={text} disablePadding>
+                                    <ListItemButton
+                                        onClick={() => {
+                                            navigate(path);
+                                            setActive(path);
+                                            if (!isNonMobile) setIsSidebarOpen(false);
+                                        }}
+                                        sx={{
+                                            backgroundColor: active === path ? theme.palette.primary.light : 'transparent',
+                                            color: active === path ? theme.palette.primary.main : theme.palette.text.secondary,
+                                            mb: '0.2rem',
+                                            borderRadius: '8px',
+                                            '&:hover': {
+                                                backgroundColor: active === path ? theme.palette.primary.light : 'rgba(25, 118, 210, 0.04)',
+                                            },
+                                            px: '1.5rem'
+                                        }}
+                                    >
+                                        <ListItemIcon
                                             sx={{
-                                                backgroundColor: active === path ? theme.palette.primary.main : 'transparent',
-                                                color: active === path ? '#fff' : theme.palette.text.secondary,
-                                                m: '0.2rem 1rem',
-                                                borderRadius: '10px',
-                                                '&:hover': {
-                                                    backgroundColor: active === path ? theme.palette.primary.main : 'rgba(25, 118, 210, 0.08)',
-                                                },
+                                                minWidth: '40px',
+                                                color: active === path ? theme.palette.primary.main : theme.palette.text.secondary,
                                             }}
                                         >
-                                            <ListItemIcon
-                                                sx={{
-                                                    ml: '1rem',
-                                                    color: active === path ? '#fff' : theme.palette.text.secondary,
-                                                }}
-                                            >
-                                                {icon}
-                                            </ListItemIcon>
-                                            <ListItemText primary={text} />
-                                        </ListItemButton>
-                                    </ListItem>
-                                );
-                            })}
-                        </List>
-                    </Box>
-                </Drawer>
-            )}
+                                            {icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={text}
+                                            primaryTypographyProps={{
+                                                fontSize: '0.9rem',
+                                                fontWeight: active === path ? 600 : 400
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+                </Box>
+            </Drawer>
         </Box>
     );
 };

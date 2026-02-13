@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import API_BASE_URL from '../../config/api';
+import api from '../../utils/api';
 
-const API_URL = `${API_BASE_URL}/products`;
+const API_URL = '/products';
 
 const initialState = {
     products: [],
@@ -21,13 +20,7 @@ export const createProduct = createAsyncThunk(
     'products/create',
     async (productData, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token;
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            const response = await axios.post(API_URL, productData, config);
+            const response = await api.post(API_URL, productData);
             return response.data;
         } catch (error) {
             const message =
@@ -44,15 +37,8 @@ export const getProducts = createAsyncThunk(
     'products/getAll',
     async ({ page = 0, keyword = '', limit = 10 }, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token;
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            const response = await axios.get(
-                `${API_URL}?page=${page}&keyword=${keyword}&limit=${limit}`,
-                config
+            const response = await api.get(
+                `${API_URL}?page=${page}&keyword=${keyword}&limit=${limit}`
             );
             return response.data;
         } catch (error) {
@@ -70,13 +56,7 @@ export const updateProduct = createAsyncThunk(
     'products/update',
     async ({ id, productData }, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token;
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            const response = await axios.put(`${API_URL}/${id}`, productData, config);
+            const response = await api.put(`${API_URL}/${id}`, productData);
             return response.data;
         } catch (error) {
             const message =
@@ -93,13 +73,7 @@ export const deleteProduct = createAsyncThunk(
     'products/delete',
     async (id, thunkAPI) => {
         try {
-            const token = thunkAPI.getState().auth.user.token;
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-            await axios.delete(`${API_URL}/${id}`, config);
+            await api.delete(`${API_URL}/${id}`);
             return id;
         } catch (error) {
             const message =

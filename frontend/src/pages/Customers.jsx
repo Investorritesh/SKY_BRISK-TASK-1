@@ -9,6 +9,8 @@ import {
     DialogTitle,
     DialogContent,
     IconButton,
+    useTheme,
+    useMediaQuery,
 } from '@mui/material';
 import { Add, Refresh, Close } from '@mui/icons-material';
 import DataTable from '../components/common/DataTable';
@@ -17,6 +19,8 @@ import { getCustomers, createCustomer, reset } from '../redux/slices/customerSli
 import { toast } from 'react-toastify';
 
 const Customers = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -64,11 +68,31 @@ const Customers = () => {
 
     return (
         <Box>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h4" fontWeight="bold">Customers</Typography>
-                <Box gap={1} display="flex">
-                    <Button startIcon={<Refresh />} onClick={() => dispatch(getCustomers({ page, limit: rowsPerPage }))}>Refresh</Button>
-                    <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>Add Customer</Button>
+            <Box
+                display="flex"
+                flexDirection={isMobile ? 'column' : 'row'}
+                justifyContent="space-between"
+                alignItems={isMobile ? 'flex-start' : 'center'}
+                gap={isMobile ? 2 : 0}
+                mb={3}
+            >
+                <Typography variant={isMobile ? "h5" : "h4"} fontWeight="bold">Customers</Typography>
+                <Box gap={1} display="flex" width={isMobile ? '100%' : 'auto'}>
+                    <Button
+                        startIcon={<Refresh />}
+                        onClick={() => dispatch(getCustomers({ page, limit: rowsPerPage }))}
+                        sx={{ flex: isMobile ? 1 : 'unset' }}
+                    >
+                        Refresh
+                    </Button>
+                    <Button
+                        variant="contained"
+                        startIcon={<Add />}
+                        onClick={() => setOpen(true)}
+                        sx={{ flex: isMobile ? 1 : 'unset' }}
+                    >
+                        Add Customer
+                    </Button>
                 </Box>
             </Box>
 

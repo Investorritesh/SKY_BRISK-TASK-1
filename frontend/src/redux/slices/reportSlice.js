@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../utils/api';
 
-const API_URL = 'http://127.0.0.1:5000/api/reports';
+const API_URL = '/reports';
 
 const initialState = {
     salesReport: [],
@@ -14,9 +14,7 @@ const initialState = {
 
 export const getSalesReport = createAsyncThunk('reports/sales', async (_, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get(`${API_URL}/sales`, config);
+        const response = await api.get(`${API_URL}/sales`);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -25,9 +23,7 @@ export const getSalesReport = createAsyncThunk('reports/sales', async (_, thunkA
 
 export const getInventoryReport = createAsyncThunk('reports/inventory', async (_, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get(`${API_URL}/inventory`, config);
+        const response = await api.get(`${API_URL}/inventory`);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -36,9 +32,7 @@ export const getInventoryReport = createAsyncThunk('reports/inventory', async (_
 
 export const getProfitReport = createAsyncThunk('reports/profit', async (_, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get(`${API_URL}/profit`, config);
+        const response = await api.get(`${API_URL}/profit`);
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);

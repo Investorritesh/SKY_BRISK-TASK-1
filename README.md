@@ -46,5 +46,22 @@ A comprehensive ERP solution for managing business operations.
 - **Inventory**: Access to products and GRN.
 - **Viewer**: Read-only access to basic data.
 
-## API Documentation
-Once the server is running, the API endpoints follow the `/api/` prefix. (Swagger docs integration in progress).
+## Deployment
+
+### Backend (e.g., Render, Railway)
+1. Set the root directory to `backend`.
+2. Environment Variables: `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRE`, `NODE_ENV=production`, `CLIENT_URL`.
+3. Start Command: `npm start`.
+
+### Frontend (e.g., Vercel, Netlify)
+1. Set the root directory to `frontend`.
+2. Set Build Command: `npm run build`.
+3. Set Output Directory: `dist`.
+4. Environment Variables: `VITE_API_URL` (points to your deployed backend URL + `/api`).
+
+## Root Scripts
+For convenience, you can run these from the root folder:
+- `npm run install-all`: Installs dependencies for both folders.
+- `npm run dev-backend`: Starts backend in dev mode.
+- `npm run dev-frontend`: Starts frontend in dev mode.
+- `npm run seed`: Seeds the database with sample data.

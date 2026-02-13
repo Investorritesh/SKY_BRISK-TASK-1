@@ -35,7 +35,7 @@ const DataTable = ({
                     {title}
                 </Typography>
             </Box>
-            <TableContainer sx={{ maxHeight: 440 }}>
+            <TableContainer sx={{ maxHeight: 440, overflowX: 'auto' }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>

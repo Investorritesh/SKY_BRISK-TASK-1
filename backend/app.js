@@ -25,7 +25,13 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+
+// CORS configuration
+const corsOptions = {
+    origin: process.env.CLIENT_URL || '*',
+    credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
@@ -43,10 +49,30 @@ app.use('/api/grn', grnRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/reports', reportRoutes);
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Health check
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'API is running' });
+});
+
 // Root route
 app.get('/', (req, res) => {
     res.send('ERP API is running...');
 });
+
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+    app.get('*', (req, res) =>
+        res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'))
+    );
+}
 
 // Error Handling
 app.use(notFound);

@@ -7,6 +7,7 @@ import {
   CardContent,
   Avatar,
   useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   ShoppingCart,
@@ -79,11 +80,15 @@ const Dashboard = () => {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight="bold" mb={3}>
+      <Typography
+        variant={useMediaQuery(theme.breakpoints.down('sm')) ? "h5" : "h4"}
+        fontWeight="bold"
+        mb={3}
+      >
         ERP Overview
       </Typography>
 
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={useMediaQuery(theme.breakpoints.down('sm')) ? 2 : 3} mb={4}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="Total Sales"
@@ -122,16 +127,16 @@ const Dashboard = () => {
 
       <Grid container spacing={3}>
         {/* Sales Chart */}
-        <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 3, height: '400px' }}>
+        <Grid item xs={12} lg={8}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, height: { xs: '300px', sm: '400px' } }}>
             <Typography variant="h6" fontWeight="bold" mb={2}>
               Sales vs Purchase
             </Typography>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+            <ResponsiveContainer width="100%" height="80%">
+              <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis dataKey="name" fontSize={12} />
+                <YAxis fontSize={12} />
                 <Tooltip />
                 <Bar dataKey="sales" fill={theme.palette.primary.main} radius={[4, 4, 0, 0]} />
                 <Bar dataKey="purchase" fill="#FF8042" radius={[4, 4, 0, 0]} />
@@ -141,17 +146,17 @@ const Dashboard = () => {
         </Grid>
 
         {/* Inventory Chart */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3, height: '400px' }}>
+        <Grid item xs={12} lg={4}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, height: { xs: '350px', sm: '400px' } }}>
             <Typography variant="h6" fontWeight="bold" mb={2}>
               Category Distribution
             </Typography>
-            <ResponsiveContainer width="100%" height="80%">
+            <ResponsiveContainer width="100%" height="70%">
               <PieChart>
                 <Pie
                   data={pieData}
-                  innerRadius={60}
-                  outerRadius={80}
+                  innerRadius={50}
+                  outerRadius={70}
                   paddingAngle={5}
                   dataKey="value"
                 >
@@ -162,11 +167,11 @@ const Dashboard = () => {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-            <Box display="flex" justifyContent="center" gap={2} flexWrap="wrap">
+            <Box display="flex" justifyContent="center" gap={1.5} flexWrap="wrap" mt={1}>
               {pieData.map((entry, index) => (
                 <Box key={entry.name} display="flex" alignItems="center" gap={0.5}>
-                  <Box sx={{ width: 12, height: 12, bgcolor: COLORS[index % COLORS.length], borderRadius: '50%' }} />
-                  <Typography variant="caption">{entry.name}</Typography>
+                  <Box sx={{ width: 10, height: 10, bgcolor: COLORS[index % COLORS.length], borderRadius: '50%' }} />
+                  <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>{entry.name}</Typography>
                 </Box>
               ))}
             </Box>

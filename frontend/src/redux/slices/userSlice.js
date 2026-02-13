@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import API_BASE_URL from '../../config/api';
+import api from '../../utils/api';
 
-const API_URL = `${API_BASE_URL}/users`;
+const API_URL = '/users';
 
 const initialState = {
     users: [],
@@ -17,10 +16,8 @@ const initialState = {
 
 export const getUsers = createAsyncThunk('users/getAll', async (params, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
         const { page = 0, limit = 10 } = params || {};
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}`, config);
+        const response = await api.get(`${API_URL}?page=${page}&limit=${limit}`);
         return response.data;
     } catch (error) {
         const message = error.response?.data?.message || error.message;
@@ -30,9 +27,7 @@ export const getUsers = createAsyncThunk('users/getAll', async (params, thunkAPI
 
 export const updateUser = createAsyncThunk('users/update', async ({ id, userData }, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.put(`${API_URL}/${id}`, userData, config);
+        const response = await api.put(`${API_URL}/${id}`, userData);
         return response.data;
     } catch (error) {
         const message = error.response?.data?.message || error.message;
@@ -42,9 +37,7 @@ export const updateUser = createAsyncThunk('users/update', async ({ id, userData
 
 export const deleteUser = createAsyncThunk('users/delete', async (id, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        await axios.delete(`${API_URL}/${id}`, config);
+        await api.delete(`${API_URL}/${id}`);
         return id;
     } catch (error) {
         const message = error.response?.data?.message || error.message;

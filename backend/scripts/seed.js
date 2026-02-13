@@ -128,6 +128,10 @@ const suppliers = [
 
 const seedData = async () => {
     try {
+        if (!process.env.MONGODB_URI) {
+            throw new Error('MONGODB_URI is not defined in .env file');
+        }
+        console.log('Connecting to MongoDB...');
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('✅ Connected to MongoDB for seeding...');
 
@@ -141,10 +145,15 @@ const seedData = async () => {
         await GRN.deleteMany();
         await Invoice.deleteMany();
 
-        // 1. Create Users
-        const createdUsers = await User.insertMany(users);
+        // 1. Create Users (use User.create to trigger pre-save password hashing)
+        const createdUsers = [];
+        for (const userData of users) {
+            const user = await User.create(userData);
+            createdUsers.push(user);
+            console.log(`  ✅ User created: ${user.email}`);
+        }
         const adminUser = createdUsers[0]._id;
-        console.log('✅ Users Seeded');
+        console.log('✅ All Users Seeded');
 
         // 2. Create Products
         const productsWithUser = products.map(p => ({ ...p, createdBy: adminUser }));
@@ -230,7 +239,7 @@ const seedData = async () => {
             salesOrder: createdSO._id,
             customer: createdCustomers[0]._id,
             invoiceDate: new Date(),
-            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             items: [
                 {
                     product: createdProducts[0]._id,
